@@ -140,8 +140,8 @@ def split_train_test(df, user_size, test_size=0.2, time_order=False):
         train_user_list = create_user_list(train_df, user_size)
     else:
         total_user_list = create_user_list(df, user_size)
-        train_user_list = [None] * len(user_list)
-        test_user_list = [None] * len(user_list)
+        train_user_list = [None] * len(total_user_list)
+        test_user_list = [None] * len(total_user_list)
         for user, item_list in enumerate(total_user_list):
             # Choose latest item
             item_list = sorted(item_list, key=lambda x: x[0])
