@@ -163,6 +163,7 @@ def split_train_test(df, user_size, test_size=0.2, time_order=False):
             # Choose latest item
             item_list = sorted(item_list, key=lambda x: x[0])
             # Split item
+            print(math.ceil(len(item_list)*(1-test_size)))
             test_item = item_list[math.ceil(len(item_list)*(1-test_size)):]
             train_item = item_list[:math.ceil(len(item_list)*(1-test_size))]
             # Register to each user list
