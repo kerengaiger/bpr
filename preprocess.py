@@ -125,6 +125,7 @@ class Gowalla(DatasetLoader):
 
 
 def convert_unique_idx(df, column_name):
+    print(len(df[column_name].unique()))
     column_dict = {x: i for i, x in enumerate(df[column_name].unique())}
     df[column_name] = df[column_name].apply(column_dict.get)
     df[column_name] = df[column_name].astype('int')
