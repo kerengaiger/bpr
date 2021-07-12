@@ -33,8 +33,11 @@ class MovieLens1M(DatasetLoader):
     def process_data(self, df):
         df = df[df['rate'] >= self.pos_thresh]
         df = filter_by_cnt(df, 'user', self.min_usr_len, self.max_usr_len)
+        print('valid users after filter: ', len(df['user'].unique()))
         df = filter_by_cnt(df, 'item', self.min_item_cnt, self.max_item_cnt)
+        print('valid items after filter: ', len(df['item'].unique()))
         df = filter_by_cnt(df, 'user', self.fin_min_usr_len, self.max_usr_len)
+        print('final valid users: ', len(df['user'].unique()))
         return df
 
     def load(self):
