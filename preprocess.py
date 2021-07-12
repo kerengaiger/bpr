@@ -143,6 +143,10 @@ def split_train_test(df, user_size, test_size=0.2, time_order=False):
     Because it needs `user_list` for splitting dataset as `time_order` is set,
     Returning `user_list` data structure will be a good choice."""
     # TODO: Handle duplicated items
+    if int(test_size) != 0:
+        # in this case we chose an absolute number for test items
+        test_size = test_size / len(df)
+
     if not time_order:
         test_idx = np.random.choice(len(df), size=int(len(df)*test_size))
         train_idx = list(set(range(len(df))) - set(test_idx))
@@ -230,7 +234,7 @@ if __name__ == '__main__':
                         help="File path for preprocessed data")
     parser.add_argument('--test_size',
                         type=float,
-                        default=0.2,
+                        default=1,
                         help="Proportion for training and testing split")
     parser.add_argument('--time_order',
                         action='store_true',
