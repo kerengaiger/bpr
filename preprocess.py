@@ -21,17 +21,28 @@ class DatasetLoader(object):
 
 
 class MovieLens1M(DatasetLoader):
-    def __init__(self, data_dir):
-        self.fpath = os.path.join(data_dir, 'ratings.dat')
+    def __init__(self, data_dir, file_name):
+        self.fpath = os.path.join(data_dir, file_name)
+        self.pos_thresh = 4.0
+        self.min_usr_len = 1
+        self.max_usr_len = 60
+        self.min_item_cnt = 10
+        self.max_item_cnt = 10000
+        self.fin_min_usr_len = 2
+
+    def process_data(self, df):
+        df = df[df['rate'] >= self.pos_thresh]
+        df = filter_by_cnt(df, 'user', self.min_usr_len, self.max_usr_len)
+        df = filter_by_cnt(df, 'item', self.min_item_cnt, self.max_item_cnt)
+        df = filter_by_cnt(df, 'user', self.fin_min_usr_len, self.max_usr_len)
+        return df
 
     def load(self):
-        # Load data
         df = pd.read_csv(self.fpath,
                          sep='::',
                          engine='python',
                          names=['user', 'item', 'rate', 'time'])
-        # TODO: Remove negative rating?
-        # df = df[df['rate'] >= 3]
+        df = self.process_data(df)
         return df
 
 
@@ -164,9 +175,13 @@ def create_pair(user_list):
     return pair
 
 
+def filter_by_cnt(df, col, min_cnt, max_cnt):
+    return df.groupby(col).filter(lambda x: (len(x) >min_cnt) and len(x) < max_cnt)
+
+
 def main(args):
     if args.dataset == 'ml-1m':
-        df = MovieLens1M(args.data_dir).load()
+        df = MovieLens1M(args.data_dir, 'ratings.dat').load()
     elif args.dataset == 'ml-20m':
         df = MovieLens20M(args.data_dir).load()
     elif args.dataset == 'amazon-beauty':
