@@ -95,7 +95,13 @@ def vsl_recall(pred, true):
     intersection_size = intersection.get_size_tensor().float()
     true_size = true.get_size_tensor().float()
     return intersection_size / true_size
-    
+
+
+def hit_ratio_k(model, test_list, k):
+    full_preds_mtx = model.recommend(torch.tensor(range(len(test_list))))
+    preds_k = full_preds_mtx[:, :k]
+    return torch.any(preds_k == torch.tensor(test_list), dim=1).sum() / len(test_list)
+
     
 def precision_and_recall_k(user_emb, item_emb, train_user_list, test_user_list, klist, batch=512):
     """Compute precision at k using GPU.
