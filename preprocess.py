@@ -143,11 +143,6 @@ def split_train_test(df, user_size, test_size=0.2, time_order=False):
     Because it needs `user_list` for splitting dataset as `time_order` is set,
     Returning `user_list` data structure will be a good choice."""
     # TODO: Handle duplicated items
-    if int(test_size) != 0:
-        # in this case we chose an absolute number for test items
-        test_size = test_size / len(df)
-        print(test_size)
-
     if not time_order:
         test_idx = np.random.choice(len(df), size=int(len(df)*test_size))
         train_idx = list(set(range(len(df))) - set(test_idx))
@@ -163,9 +158,13 @@ def split_train_test(df, user_size, test_size=0.2, time_order=False):
             # Choose latest item
             item_list = sorted(item_list, key=lambda x: x[0])
             # Split item
-            print(math.ceil(len(item_list)*(1-test_size)))
-            test_item = item_list[math.ceil(len(item_list)*(1-test_size)):]
-            train_item = item_list[:math.ceil(len(item_list)*(1-test_size))]
+            if int(test_size) != 0:
+                # in this case we chose an absolute number for test items
+                test_item = item_list[-test_size:]
+                train_item = item_list[:-test_size]
+            else:
+                test_item = item_list[math.ceil(len(item_list)*(1-test_size)):]
+                train_item = item_list[:math.ceil(len(item_list)*(1-test_size))]
             # Register to each user list
             test_user_list[user] = test_item
             train_user_list[user] = train_item
