@@ -146,6 +146,7 @@ def split_train_test(df, user_size, test_size=0.2, time_order=False):
     if int(test_size) != 0:
         # in this case we chose an absolute number for test items
         test_size = test_size / len(df)
+        print(test_size)
 
     if not time_order:
         test_idx = np.random.choice(len(df), size=int(len(df)*test_size))
