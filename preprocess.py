@@ -28,7 +28,7 @@ class MovieLens1M(DatasetLoader):
         self.max_usr_len = 60
         self.min_item_cnt = 10
         self.max_item_cnt = 10000
-        self.fin_min_usr_len = 2
+        self.fin_min_usr_len = 4
 
     def process_data(self, df):
         df = df[df['rate'] > self.pos_thresh]
