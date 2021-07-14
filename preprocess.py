@@ -161,6 +161,8 @@ def split_train_test(df, user_size, test_size=0.2, time_order=False):
             if int(test_size) != 0:
                 # in this case we chose an absolute number for test items
                 test_item = item_list[-int(test_size):]
+                item_list = item_list[:-int(test_size)]
+                valid_item = item_list[-int(test_size):]
                 train_item = item_list[:-int(test_size)]
             else:
                 test_item = item_list[math.ceil(len(item_list)*(1-test_size)):]
