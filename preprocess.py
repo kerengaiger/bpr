@@ -28,7 +28,7 @@ class MovieLens1M(DatasetLoader):
         self.max_usr_len = 60
         self.min_item_cnt = 10
         self.max_item_cnt = 10000
-        self.fin_min_usr_len = 4
+        self.fin_min_usr_len = 3
 
     def process_data(self, df):
         df = df[df['rate'] > self.pos_thresh]
@@ -182,7 +182,7 @@ def create_pair(user_list):
 
 
 def filter_by_cnt(df, col, min_cnt, max_cnt):
-    return df.groupby(col).filter(lambda x: (len(x) >min_cnt) and len(x) < max_cnt)
+    return df.groupby(col).filter(lambda x: (len(x) > min_cnt) and len(x) < max_cnt)
 
 
 def main(args):
