@@ -1,7 +1,7 @@
 """Utility functions for calculating evaluation metrics by accelerating gpu. Work In Progress"""
 import torch
 import vsl_cpp
-
+import pandas as pd
 
 class VariableShapeList(object):
     def __init__(self, indexes, data):
@@ -97,12 +97,34 @@ def vsl_recall(pred, true):
     return intersection_size / true_size
 
 
-def hit_ratio_k(model, test_list, k):
-    full_preds_mtx = model.recommend(torch.tensor(range(len(test_list))))
-    preds_k = full_preds_mtx[:, :k]
-    return torch.any(preds_k == torch.tensor(test_list), dim=1).sum() / len(test_list)
+def hit_ratio_k(model, test_list, k, hr_out):
+    users_to_predict = range(len(test_list))
+    users_emb = model['W'][users_to_predict, :]
+    x_ui = torch.mm(users_emb, model['H'].T)
+    preds = torch.argsort(x_ui, dim=1, descending=True)
+    preds_k = preds[:, :k]
+    hits = torch.any(preds_k == torch.tensor(test_list), dim=1)
+    pd.DataFrame({'user': range(len(test_list)), 'item': [itm_lst[0] for itm_lst in test_list],
+                  'hit': list(hits.long().numpy())}).to_csv(hr_out, index=False)
+    return hits.sum().item() / len(test_list)
 
-    
+
+def mrr_k(model, test_list, k, mrr_out):
+    users_to_predict = range(len(test_list))
+    users_emb = model['W'][users_to_predict, :]
+    x_ui = torch.mm(users_emb, model['H'].T)
+    preds = torch.argsort(x_ui, dim=1, descending=True)
+    preds_k = preds[:, :k]
+    locs = torch.where(preds_k == torch.tensor(test_list))
+    rrs = (1/(locs[1]+1)).numpy()
+    df_out = pd.DataFrame({'user': range(len(test_list)), 'item': [itm_lst[0] for itm_lst in test_list],
+                           'rr': [0] * len(test_list)})
+
+    df_out.loc[locs[0].numpy(), 'rr'] = rrs
+    df_out.to_csv(mrr_out, index=False)
+    return rrs.sum()/len(test_list)
+
+
 def precision_and_recall_k(user_emb, item_emb, train_user_list, test_user_list, klist, batch=512):
     """Compute precision at k using GPU.
 
