@@ -46,6 +46,15 @@ class MovieLens1M(DatasetLoader):
         return df
 
 
+class Yahoo(DatasetLoader):
+    def __init__(self, data_dir, file_name):
+        self.fpath = os.path.join(data_dir, file_name)
+
+    def load(self):
+        df = pd.read_csv(self.fpath, names=['user', 'item', 'rate', 'time'])
+        return df
+
+
 class MovieLens20M(DatasetLoader):
     def __init__(self, data_dir):
         self.fpath = os.path.join(data_dir, 'ratings.csv')
@@ -194,6 +203,8 @@ def main(args):
         df = MovieLens20M(args.data_dir).load()
     elif args.dataset == 'amazon-beauty':
         df = AmazonBeauty(args.data_dir).load()
+    elif args.dataset == 'yahoo':
+        df = Yahoo(args.data_dir, 'yahoo_full_ranks.csv')
     else:
         raise NotImplementedError
     df, user_mapping = convert_unique_idx(df, 'user')
@@ -226,7 +237,7 @@ if __name__ == '__main__':
     # Parse argument
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset',
-                        choices=['ml-1m', 'ml-20m', 'amazon-beauty', 'gowalla'])
+                        choices=['ml-1m', 'ml-20m', 'amazon-beauty', 'gowalla', 'yahoo'])
     parser.add_argument('--data_dir',
                         type=str,
                         default=os.path.join('data', 'ml-1m'),
