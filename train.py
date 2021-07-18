@@ -207,7 +207,6 @@ def main(args):
                                                 'R@5': rlist[1],
                                                 'R@10': rlist[2]}, idx)
         if idx % args.save_every == (args.save_every - 1):
-            print('hyyyyyyyyyy')
             dirname = os.path.dirname(os.path.abspath(args.model))
             os.makedirs(dirname, exist_ok=True)
             torch.save(model.state_dict(), args.model)
