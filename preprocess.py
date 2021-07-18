@@ -204,7 +204,7 @@ def main(args):
     elif args.dataset == 'amazon-beauty':
         df = AmazonBeauty(args.data_dir).load()
     elif args.dataset == 'yahoo':
-        df = Yahoo(args.data_dir, 'yahoo_full_ranks.csv')
+        df = Yahoo(args.data_dir, 'yahoo_full_ranks.csv').load()
     else:
         raise NotImplementedError
     df, user_mapping = convert_unique_idx(df, 'user')
