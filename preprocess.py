@@ -50,6 +50,7 @@ class Yahoo(DatasetLoader):
     def __init__(self, data_dir, file_name):
         self.fpath = os.path.join(data_dir, file_name)
         self.fin_min_usr_len = 3
+        self.max_usr_len = 200
 
     def load(self):
         df = pd.read_csv(self.fpath, names=['user', 'item', 'rate', 'time'])
