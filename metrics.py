@@ -1,6 +1,6 @@
 """Utility functions for calculating evaluation metrics by accelerating gpu. Work In Progress"""
 import torch
-import vsl_cpp
+# import vsl_cpp
 import pandas as pd
 
 class VariableShapeList(object):
