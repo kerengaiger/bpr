@@ -69,7 +69,9 @@ class BPR(nn.Module):
     def __init__(self, user_size, item_size, dim, weight_decay):
         super().__init__()
         self.W = nn.Parameter(torch.empty(user_size, dim))
+        print(self.W.size())
         self.H = nn.Parameter(torch.empty(item_size, dim))
+        print(self.H.size())
         nn.init.xavier_normal_(self.W.data)
         nn.init.xavier_normal_(self.H.data)
         self.weight_decay = weight_decay
